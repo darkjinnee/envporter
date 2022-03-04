@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/darkjinnee/envporter/pkg/porter"
 	"github.com/darkjinnee/go-err"
 	"os"
 	"strings"
@@ -11,13 +12,13 @@ import (
 var file *os.File
 
 func init() {
-	arg := flag.String(
+	path := flag.String(
 		"f",
 		".env",
 		"path to .env file",
 	)
 	flag.Parse()
-	filePath := fmt.Sprintf("%s", *arg)
+	filePath := fmt.Sprintf("%s", *path)
 
 	dirPath, err := os.Getwd()
 	goerr.Fatal(
@@ -45,4 +46,5 @@ func init() {
 
 func main() {
 	fmt.Print(file.Name() + "\n")
+	fmt.Print(porter.CheckIpv4Tcp(80))
 }
