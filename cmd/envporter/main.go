@@ -12,13 +12,14 @@ import (
 var file *os.File
 
 func init() {
-	path := flag.String(
+	var filePath string
+	flag.StringVar(
+		&filePath,
 		"f",
 		".env",
 		"path to .env file",
 	)
 	flag.Parse()
-	filePath := fmt.Sprintf("%s", *path)
 
 	dirPath, err := os.Getwd()
 	goerr.Fatal(
@@ -46,5 +47,5 @@ func init() {
 
 func main() {
 	fmt.Print(file.Name() + "\n")
-	fmt.Print(porter.CheckIpv4Tcp(80))
+	fmt.Print(porter.CheckIpv4Tcp(8081))
 }
