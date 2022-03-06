@@ -1,17 +1,21 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"github.com/darkjinnee/envporter/internal/app/envporter"
 	"github.com/darkjinnee/go-err"
 	"os"
+	"regexp"
+	"strconv"
 	"strings"
 )
 
 type Args struct {
 	File *os.File
 	Path string
+	Reg  string
 	Min  int
 	Max  int
 }
@@ -36,6 +40,12 @@ func init() {
 		"max",
 		9999,
 		"maximum port number range",
+	)
+	flag.StringVar(
+		&args.Reg,
+		"reg",
+		`\BPORT\b`,
+		"regular expression for substring search",
 	)
 	flag.Parse()
 
@@ -64,8 +74,27 @@ func init() {
 }
 
 func main() {
-	for min, max := range map[int]int{6000: 7000, 8000: 9999} {
-		fmt.Print(envporter.FreePort(min, max))
-		fmt.Print("\n")
+	var content string
+	fileScanner := bufio.NewScanner(args.File)
+	for fileScanner.Scan() {
+		line := fileScanner.Text()
+		if ok, _ := regexp.MatchString(args.Reg, line); !ok {
+			content += strings.Join([]string{
+				line,
+				"\n",
+			}, "")
+			continue
+		}
+
+		port := envporter.FreePort(args.Min, args.Max)
+		lineArr := strings.Split(line, "=")
+		content += strings.Join([]string{
+			lineArr[0],
+			"=",
+			strconv.Itoa(port),
+			"\n",
+		}, "")
 	}
+
+	fmt.Print(content)
 }
