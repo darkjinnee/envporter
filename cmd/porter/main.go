@@ -45,11 +45,19 @@ func main() {
 		args.Ipv,
 	)
 
+	port := strconv.Itoa(args.Port)
 	if result {
 		fmt.Print(strings.Join([]string{
 			"port",
-			strconv.Itoa(args.Port),
-			"in use",
+			port,
+			"used",
+			"\n",
+		}, " "))
+	} else {
+		fmt.Print(strings.Join([]string{
+			"port",
+			port,
+			"free",
 			"\n",
 		}, " "))
 	}
