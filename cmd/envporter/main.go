@@ -5,6 +5,7 @@ import (
 	"flag"
 	"github.com/darkjinnee/envporter/internal/app/envporter"
 	"github.com/darkjinnee/go-err"
+	"log"
 	"os"
 	"regexp"
 	"strconv"
@@ -47,6 +48,10 @@ func init() {
 		"regular expression for substring search",
 	)
 	flag.Parse()
+
+	if args.Min > args.Max {
+		log.Fatalf("[Error] envporter.init: Range incorrect")
+	}
 
 	dirPath, err := os.Getwd()
 	goerr.Fatal(
