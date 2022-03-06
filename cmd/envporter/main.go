@@ -3,21 +3,39 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/darkjinnee/envporter/pkg/porter"
+	"github.com/darkjinnee/envporter/internal/app/envporter"
 	"github.com/darkjinnee/go-err"
 	"os"
 	"strings"
 )
 
-var file *os.File
+type Args struct {
+	File *os.File
+	Path string
+	Min  int
+	Max  int
+}
+
+var args Args
 
 func init() {
-	var filePath string
 	flag.StringVar(
-		&filePath,
-		"f",
+		&args.Path,
+		"file",
 		".env",
 		"path to .env file",
+	)
+	flag.IntVar(
+		&args.Min,
+		"min",
+		3000,
+		"minimum port number range",
+	)
+	flag.IntVar(
+		&args.Max,
+		"max",
+		9999,
+		"maximum port number range",
 	)
 	flag.Parse()
 
@@ -27,15 +45,15 @@ func init() {
 		"[Error] envporter.init: Failed to return the root path of directory",
 	)
 
-	if strings.EqualFold(filePath, ".env") {
-		filePath = strings.Join([]string{
+	if strings.EqualFold(args.Path, ".env") {
+		args.Path = strings.Join([]string{
 			dirPath,
-			filePath,
+			args.Path,
 		}, "/")
 	}
 
-	file, err = os.OpenFile(
-		filePath,
+	args.File, err = os.OpenFile(
+		args.Path,
 		os.O_RDWR,
 		os.ModePerm,
 	)
@@ -46,6 +64,8 @@ func init() {
 }
 
 func main() {
-	fmt.Print(file.Name() + "\n")
-	fmt.Print(porter.CheckIpv4Tcp(8081))
+	for min, max := range map[int]int{6000: 7000, 8000: 9999} {
+		fmt.Print(envporter.FreePort(min, max))
+		fmt.Print("\n")
+	}
 }
