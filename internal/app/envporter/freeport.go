@@ -15,7 +15,7 @@ func NumberRange(min, max int) int {
 
 func FreePort(min, max int) int {
 	var port int
-	for i := 1; i < 10; i++ {
+	for i := 1; i < 1024; i++ {
 		port = NumberRange(min, max)
 		for _, value := range usedPorts {
 			if port == value || !porter.CheckIpv4Tcp(port) {
