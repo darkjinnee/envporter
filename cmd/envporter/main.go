@@ -3,7 +3,6 @@ package main
 import (
 	"bufio"
 	"flag"
-	"fmt"
 	"github.com/darkjinnee/envporter/internal/app/envporter"
 	"github.com/darkjinnee/go-err"
 	"os"
@@ -96,5 +95,8 @@ func main() {
 		}, "")
 	}
 
-	fmt.Print(content)
+	envporter.Overwrite(
+		args.File,
+		content,
+	)
 }
